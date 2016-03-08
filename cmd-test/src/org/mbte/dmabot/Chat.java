@@ -4,15 +4,18 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Chat {
+    private final Telegram telegram;
     private final JSONObject chatObj;
+    private final long chatId;
 
-    public Chat(JSONObject chatObj) {
+    public Chat(Telegram telegram, JSONObject chatObj) {
+        this.telegram = telegram;
         this.chatObj = chatObj;
+        this.chatId = chatObj.getLong("id");
     }
 
     public void proccess(JSONObject message) {
-        int chatId = chatObj.getInt("id");
-        Telegram.sendChatAction(chatId, "typing");
+        telegram.sendChatAction(chatId, "typing");
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {  //
@@ -35,6 +38,7 @@ public class Chat {
         keyboard.put("resize_keyboard",true);
         keyboard.put("one_time_keyboard",true);
         toSend.put("reply_markup", keyboard);
-        Telegram.call("sendMessage", toSend);
+        telegram.sendMessage(toSend);
     }
+
 }
